@@ -77,6 +77,25 @@ class BukuController extends Controller
             ->with('success', 'Data buku berhasil diperbarui!');
     }
 
+    // Menampilkan daftar buku yang sudah dihapus
+    public function trashed()
+    {
+        $bukus = Buku::onlyTrashed()
+            ->latest('deleted_at')
+            ->get();
+
+    return view('buku.trashed', compact('bukus'));
+    }
+    // Memulihkan buku yang sudah dihapus
+    public function restore($id)
+    {
+        $buku = Buku::withTrashed()->findOrFail($id);
+
+        $buku->restore();
+
+         return redirect()->route('buku.index')
+            ->with('success', 'Buku berhasil dipulihkan!');
+    }
     // Menghapus data buku
     public function destroy(Buku $buku)
     {
@@ -89,7 +108,9 @@ class BukuController extends Controller
     // Membuat kode buku otomatis
     private function generateKodeBuku()
     {
-        $bukuTerakhir = Buku::orderBy('id', 'desc')->first();
+        $bukuTerakhir = Buku::withTrashed()
+            ->orderBy('id', 'desc')
+            ->first();
 
         if (!$bukuTerakhir) {
             return 'BK0001';

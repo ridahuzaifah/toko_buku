@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('harga_jual', 12, 2);
             $table->text('keterangan')->nullable();
             $table->timestamps();
+            $table->SoftDeletes();
         });
     }
 

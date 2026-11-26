@@ -12,6 +12,10 @@ class DetailPesanan extends Model
     protected $fillable = [
         'pesanan_id',
         'buku_id',
+        'kode_buku',
+        'judul_buku',
+        'pengarang',
+        'penerbit',
         'jumlah',
         'harga',
         'subtotal',
@@ -24,6 +28,6 @@ class DetailPesanan extends Model
 
     public function buku(): BelongsTo
     {
-        return $this->belongsTo(Buku::class);
+        return $this->belongsTo(Buku::class)->withTrashed();
     }
 }

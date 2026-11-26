@@ -26,6 +26,7 @@
 {{-- HEADER --}}
 <div class="content-card mb-4">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
         <div>
             <h5 class="fw-bold mb-1">Daftar Koleksi Buku</h5>
             <p class="text-muted mb-0">
@@ -33,10 +34,23 @@
             </p>
         </div>
 
-        <a href="{{ route('buku.create') }}" class="btn btn-orange">
-            <i class="bi bi-plus-circle me-1"></i>
-            Tambah Buku
-        </a>
+        {{-- TOMBOL AKSI --}}
+        <div class="d-flex gap-2 flex-wrap">
+
+            <a href="{{ route('buku.trashed') }}"
+               class="btn btn-outline-danger">
+                <i class="bi bi-trash me-1"></i>
+                Buku Terhapus
+            </a>
+
+            <a href="{{ route('buku.create') }}"
+               class="btn btn-orange">
+                <i class="bi bi-plus-circle me-1"></i>
+                Tambah Buku
+            </a>
+
+        </div>
+
     </div>
 </div>
 
@@ -174,18 +188,21 @@
                         <td>
                             <div class="d-flex justify-content-center gap-1">
 
+                                {{-- DETAIL --}}
                                 <a href="{{ route('buku.show', $buku->id) }}"
                                    class="btn btn-sm btn-info text-white"
                                    title="Detail Buku">
                                     <i class="bi bi-eye"></i>
                                 </a>
 
+                                {{-- EDIT --}}
                                 <a href="{{ route('buku.edit', $buku->id) }}"
                                    class="btn btn-sm btn-warning"
                                    title="Edit Buku">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
 
+                                {{-- HAPUS --}}
                                 <form action="{{ route('buku.destroy', $buku->id) }}"
                                       method="POST"
                                       class="d-inline"

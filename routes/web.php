@@ -68,6 +68,14 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
 
+    // DAFTAR BUKU TERHAPUS
+Route::get('/buku-terhapus', [BukuController::class, 'trashed'])
+    ->name('buku.trashed');
+
+// RESTORE BUKU
+Route::patch('/buku/{id}/restore', [BukuController::class, 'restore'])
+    ->name('buku.restore');
+
     // DASHBOARD ADMIN
     Route::get('/dashboard', function () {
 
@@ -204,15 +212,20 @@ Route::middleware(['auth', 'role:user'])->group(function () {
         ->name('pesanan.show');
 
 
-    // RIWAYAT PESANAN
-    Route::get('/riwayat-pesanan', function () {
+    
+// RIWAYAT PESANAN
+Route::get('/riwayat-pesanan', function () {
 
-        $pesanans = Pesanan::where('user_id', auth()->id())
-            ->latest()
-            ->get();
+    $pesanans = Pesanan::with([
+        'detailPesanans:id,pesanan_id,jumlah'
+    ])
+        ->where('user_id', auth()->id())
+        ->latest()
+        ->get();
 
-        return view('pesanan.index', compact('pesanans'));
+    return view('pesanan.index', compact('pesanans'));
 
-    })->name('pesanan.index');
+})->name('pesanan.index');
+
 
 });

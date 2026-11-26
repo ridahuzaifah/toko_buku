@@ -13,6 +13,7 @@
         </div>
     @endif
 
+    {{-- Informasi utama pesanan --}}
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
 
@@ -64,6 +65,7 @@
         </div>
     </div>
 
+    {{-- Alamat pengiriman --}}
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-4">
 
@@ -88,12 +90,15 @@
                     {{ $pesanan->alamat->kode_pos }}
                 </p>
             @else
-                <p class="text-muted">Alamat tidak tersedia.</p>
+                <p class="text-muted mb-0">
+                    Alamat tidak tersedia.
+                </p>
             @endif
 
         </div>
     </div>
 
+    {{-- Detail buku pesanan --}}
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
 
@@ -104,7 +109,7 @@
 
                     <thead class="table-light">
                         <tr>
-                            <th>Nama Buku</th>
+                            <th>Informasi Buku</th>
                             <th>Harga</th>
                             <th>Jumlah</th>
                             <th>Subtotal</th>
@@ -112,23 +117,67 @@
                     </thead>
 
                     <tbody>
-                        @foreach($pesanan->detailPesanans as $detail)
+                        @forelse($pesanan->detailPesanans as $detail)
+                            @php
+                                $judul = $detail->judul_buku
+                                    ?? $detail->buku?->judul_buku
+                                    ?? 'Buku tidak tersedia';
+
+                                $kode = $detail->kode_buku
+                                    ?? $detail->buku?->kode_buku;
+
+                                $pengarang = $detail->pengarang
+                                    ?? $detail->buku?->pengarang;
+
+                                $penerbit = $detail->penerbit
+                                    ?? $detail->buku?->penerbit;
+                            @endphp
+
                             <tr>
                                 <td>
-                                    {{ $detail->buku->judul_buku ?? 'Buku tidak tersedia' }}
+                                    <div class="fw-semibold">
+                                        {{ $judul }}
+                                    </div>
+
+                                    @if($kode)
+                                        <small class="text-muted d-block">
+                                            Kode: {{ $kode }}
+                                        </small>
+                                    @endif
+
+                                    @if($pengarang)
+                                        <small class="text-muted d-block">
+                                            Pengarang: {{ $pengarang }}
+                                        </small>
+                                    @endif
+
+                                    @if($penerbit)
+                                        <small class="text-muted d-block">
+                                            Penerbit: {{ $penerbit }}
+                                        </small>
+                                    @endif
                                 </td>
 
                                 <td>
                                     Rp {{ number_format($detail->harga, 0, ',', '.') }}
                                 </td>
 
-                                <td>{{ $detail->jumlah }}</td>
+                                <td>
+                                    {{ $detail->jumlah }}
+                                </td>
 
                                 <td>
                                     Rp {{ number_format($detail->subtotal, 0, ',', '.') }}
                                 </td>
                             </tr>
-                        @endforeach
+
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    Belum ada detail buku pada pesanan ini.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
 
                     <tfoot>
@@ -149,6 +198,7 @@
         </div>
     </div>
 
+    {{-- Tombol navigasi --}}
     <div class="mt-4 d-flex flex-wrap gap-2">
         <a href="{{ route('catalog.index') }}"
            class="btn btn-dark">
